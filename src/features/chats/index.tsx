@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import { format } from 'date-fns'
 import { getRouteApi } from '@tanstack/react-router'
@@ -30,56 +30,60 @@ import { conversations as staticConversations } from './data/convo.json'
 
 const routeApi = getRouteApi('/_authenticated/chats/')
 
+// Helper to generate candidate conversations
+function generateCandidateConversations(unlocked: string[]) {
+  return mockCandidates
+    .filter((c) => unlocked.includes(c.id))
+    .map((candidate) => ({
+      id: `candidate-${candidate.id}`,
+      candidateId: candidate.id,
+      profile: candidate.avatar || '',
+      username: `${candidate.firstName.toLowerCase()}_${candidate.lastName.toLowerCase()}`,
+      fullName: `${candidate.firstName} ${candidate.lastName}`,
+      title: candidate.title,
+      messages: [
+        {
+          sender: 'You',
+          message: `Hello ${candidate.firstName}, I reviewed your profile and would like to connect regarding a job opportunity.`,
+          timestamp: new Date().toISOString(),
+        },
+      ],
+    }))
+}
+
 export function Chats() {
   const { candidateId } = routeApi.useSearch()
   const { unlocked } = useCandidatesStore()
 
+  // Generate conversations from unlocked candidates
+  const candidateConversations = useMemo(
+    () => generateCandidateConversations(unlocked),
+    [unlocked]
+  )
+
+  // Compute initial selected user from candidateId
+  const initialSelectedUser = useMemo(() => {
+    if (!candidateId) return null
+    const targetConvo = candidateConversations.find(
+      (c) => c.candidateId === candidateId
+    )
+    return targetConvo ? (targetConvo as ChatUser) : null
+  }, [candidateId, candidateConversations])
+
   const [search, setSearch] = useState('')
-  const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null)
+  const [selectedUser, setSelectedUser] = useState<ChatUser | null>(
+    initialSelectedUser
+  )
   const [mobileSelectedUser, setMobileSelectedUser] = useState<ChatUser | null>(
-    null
+    initialSelectedUser
   )
   const [createConversationDialogOpened, setCreateConversationDialog] =
     useState(false)
-
-  // Generate conversations from unlocked candidates
-  const candidateConversations = useMemo(() => {
-    return mockCandidates
-      .filter((c) => unlocked.includes(c.id))
-      .map((candidate) => ({
-        id: `candidate-${candidate.id}`,
-        candidateId: candidate.id,
-        profile: candidate.avatar || '',
-        username: `${candidate.firstName.toLowerCase()}_${candidate.lastName.toLowerCase()}`,
-        fullName: `${candidate.firstName} ${candidate.lastName}`,
-        title: candidate.title,
-        messages: [
-          {
-            sender: 'You',
-            message: `Hello ${candidate.firstName}, I reviewed your profile and would like to connect regarding a job opportunity.`,
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      }))
-  }, [unlocked])
 
   // Combine static conversations with candidate conversations
   const allConversations = useMemo(() => {
     return [...candidateConversations, ...staticConversations]
   }, [candidateConversations])
-
-  // Auto-select conversation when candidateId is provided
-  useEffect(() => {
-    if (candidateId) {
-      const targetConvo = candidateConversations.find(
-        (c) => c.candidateId === candidateId
-      )
-      if (targetConvo) {
-        setSelectedUser(targetConvo as ChatUser)
-        setMobileSelectedUser(targetConvo as ChatUser)
-      }
-    }
-  }, [candidateId, candidateConversations])
 
   // Filtered data based on the search query
   const filteredChatList = allConversations.filter(({ fullName }) =>
