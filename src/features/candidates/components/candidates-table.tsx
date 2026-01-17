@@ -7,7 +7,6 @@ import {
   useReactTable,
   type SortingState,
 } from '@tanstack/react-table'
-import { DataTablePagination } from '@/components/data-table/pagination'
 import {
   Table,
   TableBody,
@@ -16,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { DataTablePagination } from '@/components/data-table/pagination'
 import { type Candidate } from '../data/schema'
 import { candidatesColumns } from './candidates-columns'
 import { useCandidates } from './candidates-provider'

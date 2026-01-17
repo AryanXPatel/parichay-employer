@@ -1,11 +1,5 @@
 import { formatDistanceToNow } from 'date-fns'
-import {
-  Search,
-  Eye,
-  Unlock,
-  Heart,
-  UserPlus,
-} from 'lucide-react'
+import { Search, Eye, Unlock, Heart, UserPlus } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 type ActivityType = 'search' | 'view' | 'unlock' | 'shortlist' | 'invite'
@@ -84,7 +78,7 @@ export function RecentActivity() {
               </AvatarFallback>
             </Avatar>
             <div className='flex-1 space-y-1'>
-              <p className='text-sm font-medium leading-none'>
+              <p className='text-sm leading-none font-medium'>
                 {activity.description}
                 {activity.candidateName && (
                   <span className='text-muted-foreground'>

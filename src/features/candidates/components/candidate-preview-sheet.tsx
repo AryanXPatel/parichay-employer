@@ -276,7 +276,7 @@ function DetailRow({ icon: Icon, label, value, locked }: DetailRowProps) {
         <p
           className={cn(
             'text-sm',
-            locked && 'select-none blur-[2px] transition-all hover:blur-none'
+            locked && 'blur-[2px] transition-all select-none hover:blur-none'
           )}
         >
           {value}

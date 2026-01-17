@@ -15,11 +15,7 @@ interface ActionsCellProps {
 }
 
 export function ActionsCell({ candidate }: ActionsCellProps) {
-  const {
-    setSelectedCandidate,
-    setUnlockOpen,
-    setSheetOpen,
-  } = useCandidates()
+  const { setSelectedCandidate, setUnlockOpen, setSheetOpen } = useCandidates()
 
   const handlePreview = () => {
     setSelectedCandidate(candidate)

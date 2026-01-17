@@ -1,13 +1,13 @@
 import { Link } from '@tanstack/react-router'
 import { Coins, AlertTriangle } from 'lucide-react'
+import { useCreditsStore } from '@/stores/credits-store'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useCreditsStore } from '@/stores/credits-store'
-import { cn } from '@/lib/utils'
 
 export function CreditBadge() {
   const { balance, planName, expiryDate } = useCreditsStore()
@@ -30,7 +30,8 @@ export function CreditBadge() {
           size='sm'
           className={cn(
             'gap-2',
-            isLowBalance && 'border-amber-500 text-amber-600 dark:text-amber-400'
+            isLowBalance &&
+              'border-amber-500 text-amber-600 dark:text-amber-400'
           )}
           asChild
         >

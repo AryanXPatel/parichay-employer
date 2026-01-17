@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-router'
 import { differenceInDays, format } from 'date-fns'
+import { Link } from '@tanstack/react-router'
 import {
   Coins,
   Search,
@@ -11,6 +11,8 @@ import {
   AlertTriangle,
   ArrowRight,
 } from 'lucide-react'
+import { useCreditsStore } from '@/stores/credits-store'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -19,10 +21,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
-import { useCreditsStore } from '@/stores/credits-store'
 import { RecentActivity } from './components/recent-activity'
 import { UsageChart } from './components/usage-chart'
 
@@ -61,7 +61,7 @@ export function Dashboard() {
                   <AlertTitle>Low Credit Balance</AlertTitle>
                   <AlertDescription>
                     You have only {balance} credits remaining.{' '}
-                    <Link to='/credits' className='underline font-medium'>
+                    <Link to='/credits' className='font-medium underline'>
                       Upgrade your plan
                     </Link>{' '}
                     to continue unlocking profiles.
@@ -74,7 +74,7 @@ export function Dashboard() {
                   <AlertTitle>Plan Expiring Soon</AlertTitle>
                   <AlertDescription>
                     Your {planName} plan expires on {formatDate(expiryDate)}.{' '}
-                    <Link to='/credits' className='underline font-medium'>
+                    <Link to='/credits' className='font-medium underline'>
                       Renew now
                     </Link>{' '}
                     to avoid interruption.
@@ -110,7 +110,9 @@ export function Dashboard() {
               <Search className='size-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold'>{usageThisMonth.searches}</div>
+              <div className='text-2xl font-bold'>
+                {usageThisMonth.searches}
+              </div>
               <p className='flex items-center gap-1 text-xs text-muted-foreground'>
                 <TrendingUp className='size-3 text-green-500' />
                 +12% from last month
@@ -144,7 +146,11 @@ export function Dashboard() {
             <CardContent>
               <div className='text-2xl font-bold'>{usageThisMonth.unlocks}</div>
               <p className='text-xs text-muted-foreground'>
-                Avg. {usageThisMonth.unlocks > 0 ? Math.round((balance / usageThisMonth.unlocks) * 0.7) : 0} credits/unlock
+                Avg.{' '}
+                {usageThisMonth.unlocks > 0
+                  ? Math.round((balance / usageThisMonth.unlocks) * 0.7)
+                  : 0}{' '}
+                credits/unlock
               </p>
             </CardContent>
           </Card>
@@ -166,9 +172,7 @@ export function Dashboard() {
           <Card className='col-span-1 lg:col-span-3'>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                Your latest recruitment actions
-              </CardDescription>
+              <CardDescription>Your latest recruitment actions</CardDescription>
             </CardHeader>
             <CardContent>
               <RecentActivity />
@@ -177,7 +181,7 @@ export function Dashboard() {
         </div>
 
         <div className='mt-6 grid gap-4 sm:grid-cols-3'>
-          <Card className='group hover:border-primary/50 transition-colors'>
+          <Card className='group transition-colors hover:border-primary/50'>
             <CardHeader className='pb-3'>
               <div className='flex items-center gap-3'>
                 <div className='flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
@@ -199,7 +203,7 @@ export function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className='group hover:border-primary/50 transition-colors'>
+          <Card className='group transition-colors hover:border-primary/50'>
             <CardHeader className='pb-3'>
               <div className='flex items-center gap-3'>
                 <div className='flex size-10 items-center justify-center rounded-lg bg-pink-500/10 text-pink-500'>
@@ -221,7 +225,7 @@ export function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className='group hover:border-primary/50 transition-colors'>
+          <Card className='group transition-colors hover:border-primary/50'>
             <CardHeader className='pb-3'>
               <div className='flex items-center gap-3'>
                 <div className='flex size-10 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500'>

@@ -12,12 +12,17 @@ interface CandidatesContextType {
   setSheetOpen: (open: boolean) => void
 }
 
-const CandidatesContext = React.createContext<CandidatesContextType | undefined>(
-  undefined
-)
+const CandidatesContext = React.createContext<
+  CandidatesContextType | undefined
+>(undefined)
 
-export function CandidatesProvider({ children }: { children: React.ReactNode }) {
-  const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null)
+export function CandidatesProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [selectedCandidate, setSelectedCandidate] =
+    React.useState<Candidate | null>(null)
   const [isPreviewOpen, setPreviewOpen] = React.useState(false)
   const [isUnlockOpen, setUnlockOpen] = React.useState(false)
   const [isSheetOpen, setSheetOpen] = React.useState(false)

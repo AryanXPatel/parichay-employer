@@ -12,6 +12,7 @@ import {
   Heart,
   Unlock,
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,9 +25,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { useCandidates } from './candidates-provider'
 import { maskEmail, maskPhone, maskLastName } from '../data/schema'
-import { cn } from '@/lib/utils'
+import { useCandidates } from './candidates-provider'
 
 interface CandidatePreviewDialogProps {
   open: boolean
@@ -85,7 +85,7 @@ export function CandidatePreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+      <DialogContent className='max-h-[90vh] max-w-2xl overflow-y-auto'>
         <DialogHeader>
           <div className='flex items-start gap-4'>
             <Avatar className='size-16'>
@@ -98,7 +98,9 @@ export function CandidatePreviewDialog({
               <div className='flex items-center gap-2'>
                 <DialogTitle className='text-xl'>{displayName}</DialogTitle>
                 <div className={cn('rounded-full p-1', verification.bgColor)}>
-                  <VerificationIcon className={cn('size-4', verification.color)} />
+                  <VerificationIcon
+                    className={cn('size-4', verification.color)}
+                  />
                 </div>
               </div>
               <DialogDescription className='text-base'>
@@ -114,7 +116,7 @@ export function CandidatePreviewDialog({
 
         <div className='space-y-6'>
           <div>
-            <h4 className='font-medium mb-2'>Skills</h4>
+            <h4 className='mb-2 font-medium'>Skills</h4>
             <div className='flex flex-wrap gap-2'>
               {candidate.skills.map((skill) => (
                 <Badge key={skill} variant='secondary'>
@@ -137,7 +139,8 @@ export function CandidatePreviewDialog({
                 <div className='flex items-center gap-2'>
                   <GraduationCap className='size-4 text-muted-foreground' />
                   <span>
-                    {candidate.highestEducation} - {candidate.educationInstitution}
+                    {candidate.highestEducation} -{' '}
+                    {candidate.educationInstitution}
                   </span>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -167,11 +170,13 @@ export function CandidatePreviewDialog({
           <Separator />
 
           <div>
-            <h4 className='font-medium mb-2'>Contact Information</h4>
+            <h4 className='mb-2 font-medium'>Contact Information</h4>
             <div className='space-y-2 text-sm'>
               <div className='flex items-center gap-2'>
                 <Mail className='size-4 text-muted-foreground' />
-                <span className={!candidate.isUnlocked ? 'blur-sm select-none' : ''}>
+                <span
+                  className={!candidate.isUnlocked ? 'blur-sm select-none' : ''}
+                >
                   {displayEmail}
                 </span>
                 {!candidate.isUnlocked && (
@@ -182,7 +187,9 @@ export function CandidatePreviewDialog({
               </div>
               <div className='flex items-center gap-2'>
                 <Phone className='size-4 text-muted-foreground' />
-                <span className={!candidate.isUnlocked ? 'blur-sm select-none' : ''}>
+                <span
+                  className={!candidate.isUnlocked ? 'blur-sm select-none' : ''}
+                >
                   {displayPhone}
                 </span>
                 {!candidate.isUnlocked && (
@@ -198,7 +205,7 @@ export function CandidatePreviewDialog({
             <>
               <Separator />
               <div>
-                <h4 className='font-medium mb-2'>Verified Documents</h4>
+                <h4 className='mb-2 font-medium'>Verified Documents</h4>
                 <div className='flex flex-wrap gap-2'>
                   {candidate.documentsVerified.map((doc) => (
                     <Badge key={doc} variant='outline' className='gap-1'>

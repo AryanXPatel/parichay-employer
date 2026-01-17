@@ -1,6 +1,9 @@
 import { z } from 'zod'
 
-export type VerificationStatus = 'verified' | 'partially_verified' | 'unverified'
+export type VerificationStatus =
+  | 'verified'
+  | 'partially_verified'
+  | 'unverified'
 
 export const candidateSchema = z.object({
   id: z.string(),

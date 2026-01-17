@@ -1,4 +1,7 @@
 import { AlertTriangle, Check, Coins, Mail, Phone, User } from 'lucide-react'
+import { useCandidatesStore } from '@/stores/candidates-store'
+import { useCreditsStore } from '@/stores/credits-store'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -8,10 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useCandidates } from './candidates-provider'
-import { useCreditsStore } from '@/stores/credits-store'
-import { useCandidatesStore } from '@/stores/candidates-store'
 
 interface CandidateUnlockDialogProps {
   open: boolean
@@ -85,8 +85,8 @@ export function CandidateUnlockDialog({
             <Alert variant='destructive'>
               <AlertTriangle className='size-4' />
               <AlertDescription>
-                Insufficient credits. You need {candidate.creditCost - balance} more
-                credits to unlock this profile.
+                Insufficient credits. You need {candidate.creditCost - balance}{' '}
+                more credits to unlock this profile.
               </AlertDescription>
             </Alert>
           )}

@@ -27,11 +27,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import {
-  experienceRanges,
-  popularLocations,
-  popularSkills,
-} from '../data/data'
+import { experienceRanges, popularLocations, popularSkills } from '../data/data'
 import { type VerificationStatus } from '../data/schema'
 
 export interface QuickFilterState {
@@ -60,14 +56,22 @@ const verificationOptions: {
   icon: React.ComponentType<{ className?: string }>
 }[] = [
   { value: 'verified', label: 'Verified', icon: ShieldCheck },
-  { value: 'partially_verified', label: 'Partially Verified', icon: ShieldAlert },
+  {
+    value: 'partially_verified',
+    label: 'Partially Verified',
+    icon: ShieldAlert,
+  },
   { value: 'unverified', label: 'Unverified', icon: ShieldX },
 ]
 
 interface FacetedFilterProps {
   title: string
   icon: React.ComponentType<{ className?: string }>
-  options: { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }[]
+  options: {
+    value: string
+    label: string
+    icon?: React.ComponentType<{ className?: string }>
+  }[]
   selectedValues: string[]
   onSelectionChange: (values: string[]) => void
 }
@@ -218,9 +222,7 @@ export function QuickFilters({
         icon={Code2}
         options={skillOptions}
         selectedValues={filters.skills}
-        onSelectionChange={(values) =>
-          onChange({ ...filters, skills: values })
-        }
+        onSelectionChange={(values) => onChange({ ...filters, skills: values })}
       />
 
       <FacetedFilter

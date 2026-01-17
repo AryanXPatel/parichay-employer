@@ -1,5 +1,8 @@
 import { format } from 'date-fns'
 import { Check, Coins, CreditCard, Sparkles, Zap } from 'lucide-react'
+import { useCreditsStore } from '@/stores/credits-store'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -21,8 +23,6 @@ import {
 } from '@/components/ui/table'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
-import { useCreditsStore } from '@/stores/credits-store'
-import { cn } from '@/lib/utils'
 
 const plans = [
   {
@@ -68,15 +68,41 @@ const plans = [
 ]
 
 const usageHistory = [
-  { date: new Date('2025-01-15'), action: 'Unlocked profile', candidate: 'Aarav S.', credits: 15 },
-  { date: new Date('2025-01-14'), action: 'Unlocked profile', candidate: 'Priya M.', credits: 12 },
-  { date: new Date('2025-01-13'), action: 'Unlocked profile', candidate: 'Vivaan K.', credits: 18 },
-  { date: new Date('2025-01-12'), action: 'Unlocked profile', candidate: 'Ananya P.', credits: 14 },
-  { date: new Date('2025-01-10'), action: 'Unlocked profile', candidate: 'Arjun R.', credits: 16 },
+  {
+    date: new Date('2025-01-15'),
+    action: 'Unlocked profile',
+    candidate: 'Aarav S.',
+    credits: 15,
+  },
+  {
+    date: new Date('2025-01-14'),
+    action: 'Unlocked profile',
+    candidate: 'Priya M.',
+    credits: 12,
+  },
+  {
+    date: new Date('2025-01-13'),
+    action: 'Unlocked profile',
+    candidate: 'Vivaan K.',
+    credits: 18,
+  },
+  {
+    date: new Date('2025-01-12'),
+    action: 'Unlocked profile',
+    candidate: 'Ananya P.',
+    credits: 14,
+  },
+  {
+    date: new Date('2025-01-10'),
+    action: 'Unlocked profile',
+    candidate: 'Arjun R.',
+    credits: 16,
+  },
 ]
 
 export function Credits() {
-  const { balance, planName, planType, expiryDate, usageThisMonth } = useCreditsStore()
+  const { balance, planName, planType, expiryDate, usageThisMonth } =
+    useCreditsStore()
 
   const formatDate = (date: Date | null) => {
     if (!date) return 'N/A'
@@ -138,15 +164,15 @@ export function Credits() {
             </CardContent>
             <CardFooter>
               <Button className='w-full'>
-                <CreditCard className='size-4 me-2' />
+                <CreditCard className='me-2 size-4' />
                 Buy More Credits
               </Button>
             </CardFooter>
           </Card>
 
-          <div className='lg:col-span-2 space-y-6'>
+          <div className='space-y-6 lg:col-span-2'>
             <div>
-              <h2 className='text-lg font-semibold mb-4'>Available Plans</h2>
+              <h2 className='mb-4 text-lg font-semibold'>Available Plans</h2>
               <div className='grid gap-4 md:grid-cols-3'>
                 {plans.map((plan) => (
                   <Card
@@ -159,7 +185,7 @@ export function Credits() {
                   >
                     {plan.popular && (
                       <Badge className='absolute -top-2 left-1/2 -translate-x-1/2'>
-                        <Sparkles className='size-3 me-1' />
+                        <Sparkles className='me-1 size-3' />
                         Popular
                       </Badge>
                     )}
@@ -178,15 +204,22 @@ export function Credits() {
                     </CardHeader>
                     <CardContent className='space-y-2'>
                       {plan.features.map((feature) => (
-                        <div key={feature} className='flex items-start gap-2 text-sm'>
-                          <Check className='size-4 text-green-500 shrink-0 mt-0.5' />
+                        <div
+                          key={feature}
+                          className='flex items-start gap-2 text-sm'
+                        >
+                          <Check className='mt-0.5 size-4 shrink-0 text-green-500' />
                           <span>{feature}</span>
                         </div>
                       ))}
                     </CardContent>
                     <CardFooter>
                       <Button
-                        variant={planType === plan.name.toLowerCase() ? 'outline' : 'default'}
+                        variant={
+                          planType === plan.name.toLowerCase()
+                            ? 'outline'
+                            : 'default'
+                        }
                         className='w-full'
                         disabled={planType === plan.name.toLowerCase()}
                       >
@@ -194,7 +227,7 @@ export function Credits() {
                           'Current Plan'
                         ) : (
                           <>
-                            <Zap className='size-4 me-1' />
+                            <Zap className='me-1 size-4' />
                             Upgrade
                           </>
                         )}
@@ -208,7 +241,7 @@ export function Credits() {
         </div>
 
         <div className='mt-8'>
-          <h2 className='text-lg font-semibold mb-4'>Usage History</h2>
+          <h2 className='mb-4 text-lg font-semibold'>Usage History</h2>
           <Card>
             <Table>
               <TableHeader>

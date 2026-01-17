@@ -1,8 +1,4 @@
-import {
-  ShieldCheck,
-  ShieldAlert,
-  ShieldX,
-} from 'lucide-react'
+import { ShieldCheck, ShieldAlert, ShieldX } from 'lucide-react'
 import { type VerificationStatus } from './schema'
 
 export const verificationStatuses: {
@@ -64,12 +60,33 @@ export const noticePeriods = [
 ]
 
 export const popularSkills = [
-  'React', 'TypeScript', 'JavaScript', 'Node.js', 'Python', 'Java', 'Go',
-  'AWS', 'Docker', 'Kubernetes', 'PostgreSQL', 'MongoDB', 'GraphQL',
-  'Machine Learning', 'System Design', 'Microservices',
+  'React',
+  'TypeScript',
+  'JavaScript',
+  'Node.js',
+  'Python',
+  'Java',
+  'Go',
+  'AWS',
+  'Docker',
+  'Kubernetes',
+  'PostgreSQL',
+  'MongoDB',
+  'GraphQL',
+  'Machine Learning',
+  'System Design',
+  'Microservices',
 ]
 
 export const popularLocations = [
-  'Mumbai', 'Bangalore', 'Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata',
-  'Ahmedabad', 'Gurgaon', 'Noida',
+  'Mumbai',
+  'Bangalore',
+  'Delhi',
+  'Hyderabad',
+  'Chennai',
+  'Pune',
+  'Kolkata',
+  'Ahmedabad',
+  'Gurgaon',
+  'Noida',
 ]

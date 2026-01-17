@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { Heart, Search, Trash2 } from 'lucide-react'
+import { useCandidatesStore } from '@/stores/candidates-store'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,7 +21,6 @@ import {
 } from '@/components/ui/table'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
-import { useCandidatesStore } from '@/stores/candidates-store'
 import { mockCandidates } from '@/features/candidates/data/mock-candidates'
 import { maskLastName } from '@/features/candidates/data/schema'
 
@@ -46,16 +46,16 @@ export function Shortlist() {
         {shortlistedCandidates.length === 0 ? (
           <Card>
             <CardContent className='flex flex-col items-center justify-center py-16'>
-              <div className='flex size-16 items-center justify-center rounded-full bg-muted mb-4'>
+              <div className='mb-4 flex size-16 items-center justify-center rounded-full bg-muted'>
                 <Heart className='size-8 text-muted-foreground' />
               </div>
               <CardTitle className='mb-2'>No candidates shortlisted</CardTitle>
-              <CardDescription className='text-center mb-6'>
+              <CardDescription className='mb-6 text-center'>
                 Start exploring candidates and add them to your shortlist
               </CardDescription>
               <Button asChild>
                 <Link to='/candidates'>
-                  <Search className='size-4 me-2' />
+                  <Search className='me-2 size-4' />
                   Find Candidates
                 </Link>
               </Button>
@@ -64,7 +64,9 @@ export function Shortlist() {
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Shortlisted Candidates ({shortlistedCandidates.length})</CardTitle>
+              <CardTitle>
+                Shortlisted Candidates ({shortlistedCandidates.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -90,7 +92,8 @@ export function Shortlist() {
                             </AvatarFallback>
                           </Avatar>
                           <span className='font-medium'>
-                            {candidate.firstName} {maskLastName(candidate.lastName)}
+                            {candidate.firstName}{' '}
+                            {maskLastName(candidate.lastName)}
                           </span>
                         </div>
                       </TableCell>

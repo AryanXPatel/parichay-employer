@@ -11,19 +11,18 @@ import {
   defaultAdvancedFilters,
 } from './components/advanced-filters-popover'
 import { CandidatePreviewSheet } from './components/candidate-preview-sheet'
-import { CandidatesProvider, useCandidates } from './components/candidates-provider'
-import { CandidatesTable } from './components/candidates-table'
 import { CandidateUnlockDialog } from './components/candidate-unlock-dialog'
+import {
+  CandidatesProvider,
+  useCandidates,
+} from './components/candidates-provider'
+import { CandidatesTable } from './components/candidates-table'
 import {
   type QuickFilterState,
   QuickFilters,
   defaultQuickFilters,
 } from './components/quick-filters'
-import {
-  experienceRanges,
-  profileScoreRanges,
-  salaryRanges,
-} from './data/data'
+import { experienceRanges, profileScoreRanges, salaryRanges } from './data/data'
 import { mockCandidates } from './data/mock-candidates'
 import { type Candidate } from './data/schema'
 
@@ -63,9 +62,7 @@ function CandidatesContent() {
       // Apply quick filters - Skills
       if (quickFilters.skills.length > 0) {
         const hasMatchingSkill = quickFilters.skills.some((skill) =>
-          candidate.skills.some(
-            (s) => s.toLowerCase() === skill.toLowerCase()
-          )
+          candidate.skills.some((s) => s.toLowerCase() === skill.toLowerCase())
         )
         if (!hasMatchingSkill) return false
       }
@@ -163,7 +160,10 @@ function CandidatesContent() {
         }
       }
 
-      if (advancedFilters.creditRange && advancedFilters.creditRange !== 'all') {
+      if (
+        advancedFilters.creditRange &&
+        advancedFilters.creditRange !== 'all'
+      ) {
         const creditRange = advancedFilters.creditRange
         if (creditRange === '0-20') {
           if (candidate.creditCost > 20) return false
@@ -202,7 +202,7 @@ function CandidatesContent() {
 
           {/* Search Bar */}
           <div className='relative'>
-            <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
+            <Search className='absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
               type='text'
               value={searchQuery}

@@ -37,7 +37,8 @@ export const candidatesColumns: ColumnDef<Candidate>[] = [
     ),
     cell: ({ row }) => (
       <span className='text-sm'>
-        {row.original.experienceYears} year{row.original.experienceYears !== 1 ? 's' : ''}
+        {row.original.experienceYears} year
+        {row.original.experienceYears !== 1 ? 's' : ''}
       </span>
     ),
     enableSorting: true,
