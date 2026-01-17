@@ -1,3 +1,16 @@
+import { Link } from '@tanstack/react-router'
+import { differenceInDays, format } from 'date-fns'
+import {
+  Coins,
+  Search,
+  Eye,
+  Unlock,
+  Users,
+  Heart,
+  TrendingUp,
+  AlertTriangle,
+  ArrowRight,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -6,215 +19,231 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ConfigDrawer } from '@/components/config-drawer'
-import { Header } from '@/components/layout/header'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
-import { TopNav } from '@/components/layout/top-nav'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
-import { Analytics } from './components/analytics'
-import { Overview } from './components/overview'
-import { RecentSales } from './components/recent-sales'
+import { useCreditsStore } from '@/stores/credits-store'
+import { RecentActivity } from './components/recent-activity'
+import { UsageChart } from './components/usage-chart'
 
 export function Dashboard() {
+  const { balance, planName, expiryDate, usageThisMonth } = useCreditsStore()
+  const isLowBalance = balance < 20
+  const isExpiringPlan = expiryDate
+    ? differenceInDays(new Date(expiryDate), new Date()) < 7
+    : false
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return 'N/A'
+    return format(new Date(date), 'dd MMM yyyy')
+  }
+
   return (
     <>
-      {/* ===== Top Heading ===== */}
-      <Header>
-        <TopNav links={topNav} />
-        <div className='ms-auto flex items-center space-x-4'>
-          <Search />
-          <ThemeSwitch />
-          <ConfigDrawer />
-          <ProfileDropdown />
-        </div>
-      </Header>
+      <EmployerHeader />
 
-      {/* ===== Main ===== */}
       <Main>
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
-          <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
+        <div className='mb-6 space-y-4'>
+          <div className='flex items-center justify-between'>
+            <div>
+              <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
+              <p className='text-muted-foreground'>
+                Welcome back! Here's your recruitment overview.
+              </p>
+            </div>
           </div>
+
+          {(isLowBalance || isExpiringPlan) && (
+            <div className='space-y-2'>
+              {isLowBalance && (
+                <Alert variant='destructive'>
+                  <AlertTriangle className='size-4' />
+                  <AlertTitle>Low Credit Balance</AlertTitle>
+                  <AlertDescription>
+                    You have only {balance} credits remaining.{' '}
+                    <Link to='/credits' className='underline font-medium'>
+                      Upgrade your plan
+                    </Link>{' '}
+                    to continue unlocking profiles.
+                  </AlertDescription>
+                </Alert>
+              )}
+              {isExpiringPlan && (
+                <Alert>
+                  <AlertTriangle className='size-4' />
+                  <AlertTitle>Plan Expiring Soon</AlertTitle>
+                  <AlertDescription>
+                    Your {planName} plan expires on {formatDate(expiryDate)}.{' '}
+                    <Link to='/credits' className='underline font-medium'>
+                      Renew now
+                    </Link>{' '}
+                    to avoid interruption.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          )}
         </div>
-        <Tabs
-          orientation='vertical'
-          defaultValue='overview'
-          className='space-y-4'
-        >
-          <div className='w-full overflow-x-auto pb-2'>
-            <TabsList>
-              <TabsTrigger value='overview'>Overview</TabsTrigger>
-              <TabsTrigger value='analytics'>Analytics</TabsTrigger>
-              <TabsTrigger value='reports' disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value='notifications' disabled>
-                Notifications
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          <TabsContent value='overview' className='space-y-4'>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Total Revenue
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>$45,231.89</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Subscriptions
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-                    <circle cx='9' cy='7' r='4' />
-                    <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Sales</CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Active Now
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-              <Card className='col-span-1 lg:col-span-4'>
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className='ps-2'>
-                  <Overview />
-                </CardContent>
-              </Card>
-              <Card className='col-span-1 lg:col-span-3'>
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value='analytics' className='space-y-4'>
-            <Analytics />
-          </TabsContent>
-        </Tabs>
+
+        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Credit Balance
+              </CardTitle>
+              <Coins className='size-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{balance}</div>
+              <div className='mt-2 flex items-center justify-between text-xs text-muted-foreground'>
+                <span>{planName} Plan</span>
+                <span>Expires: {formatDate(expiryDate)}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Searches This Month
+              </CardTitle>
+              <Search className='size-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{usageThisMonth.searches}</div>
+              <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+                <TrendingUp className='size-3 text-green-500' />
+                +12% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Profiles Viewed
+              </CardTitle>
+              <Eye className='size-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{usageThisMonth.views}</div>
+              <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+                <TrendingUp className='size-3 text-green-500' />
+                +8% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Profiles Unlocked
+              </CardTitle>
+              <Unlock className='size-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{usageThisMonth.unlocks}</div>
+              <p className='text-xs text-muted-foreground'>
+                Avg. {usageThisMonth.unlocks > 0 ? Math.round((balance / usageThisMonth.unlocks) * 0.7) : 0} credits/unlock
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='mt-6 grid grid-cols-1 gap-4 lg:grid-cols-7'>
+          <Card className='col-span-1 lg:col-span-4'>
+            <CardHeader>
+              <CardTitle>Usage Overview</CardTitle>
+              <CardDescription>
+                Your recruitment activity over the past 4 weeks
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <UsageChart />
+            </CardContent>
+          </Card>
+
+          <Card className='col-span-1 lg:col-span-3'>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Your latest recruitment actions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RecentActivity />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='mt-6 grid gap-4 sm:grid-cols-3'>
+          <Card className='group hover:border-primary/50 transition-colors'>
+            <CardHeader className='pb-3'>
+              <div className='flex items-center gap-3'>
+                <div className='flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
+                  <Search className='size-5' />
+                </div>
+                <div>
+                  <CardTitle className='text-base'>Search Candidates</CardTitle>
+                  <CardDescription>Find verified profiles</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className='w-full'>
+                <Link to='/candidates'>
+                  Start Searching
+                  <ArrowRight className='ms-2 size-4' />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className='group hover:border-primary/50 transition-colors'>
+            <CardHeader className='pb-3'>
+              <div className='flex items-center gap-3'>
+                <div className='flex size-10 items-center justify-center rounded-lg bg-pink-500/10 text-pink-500'>
+                  <Heart className='size-5' />
+                </div>
+                <div>
+                  <CardTitle className='text-base'>View Shortlist</CardTitle>
+                  <CardDescription>Manage saved candidates</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Button variant='outline' asChild className='w-full'>
+                <Link to='/shortlist'>
+                  View Shortlist
+                  <ArrowRight className='ms-2 size-4' />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className='group hover:border-primary/50 transition-colors'>
+            <CardHeader className='pb-3'>
+              <div className='flex items-center gap-3'>
+                <div className='flex size-10 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500'>
+                  <Users className='size-5' />
+                </div>
+                <div>
+                  <CardTitle className='text-base'>Invite Team</CardTitle>
+                  <CardDescription>Add team members</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Button variant='outline' asChild className='w-full'>
+                <Link to='/settings/team'>
+                  Manage Team
+                  <ArrowRight className='ms-2 size-4' />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </Main>
     </>
   )
 }
-
-const topNav = [
-  {
-    title: 'Overview',
-    href: 'dashboard/overview',
-    isActive: true,
-    disabled: false,
-  },
-  {
-    title: 'Customers',
-    href: 'dashboard/customers',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Products',
-    href: 'dashboard/products',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Settings',
-    href: 'dashboard/settings',
-    isActive: false,
-    disabled: true,
-  },
-]

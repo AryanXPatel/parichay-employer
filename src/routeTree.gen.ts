@@ -26,11 +26,14 @@ import { Route as ClerkAuthenticatedRouteRouteImport } from './routes/clerk/_aut
 import { Route as ClerkauthRouteRouteImport } from './routes/clerk/(auth)/route'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
-import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
+import { Route as AuthenticatedUnlockedIndexRouteImport } from './routes/_authenticated/unlocked/index'
+import { Route as AuthenticatedShortlistIndexRouteImport } from './routes/_authenticated/shortlist/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages/index'
 import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
+import { Route as AuthenticatedCreditsIndexRouteImport } from './routes/_authenticated/credits/index'
 import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authenticated/chats/index'
-import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedCandidatesIndexRouteImport } from './routes/_authenticated/candidates/index'
 import { Route as ClerkAuthenticatedUserManagementRouteImport } from './routes/clerk/_authenticated/user-management'
 import { Route as ClerkauthSignUpRouteImport } from './routes/clerk/(auth)/sign-up'
 import { Route as ClerkauthSignInRouteImport } from './routes/clerk/(auth)/sign-in'
@@ -39,6 +42,7 @@ import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedSettingsTeamIndexRouteImport } from './routes/_authenticated/settings/team/index'
 
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
@@ -123,16 +127,29 @@ const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexRouteImport.update({
-  id: '/tasks/',
-  path: '/tasks/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedUnlockedIndexRoute =
+  AuthenticatedUnlockedIndexRouteImport.update({
+    id: '/unlocked/',
+    path: '/unlocked/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedShortlistIndexRoute =
+  AuthenticatedShortlistIndexRouteImport.update({
+    id: '/shortlist/',
+    path: '/shortlist/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsIndexRoute =
   AuthenticatedSettingsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedMessagesIndexRoute =
+  AuthenticatedMessagesIndexRouteImport.update({
+    id: '/messages/',
+    path: '/messages/',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedHelpCenterIndexRoute =
   AuthenticatedHelpCenterIndexRouteImport.update({
@@ -140,16 +157,23 @@ const AuthenticatedHelpCenterIndexRoute =
     path: '/help-center/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCreditsIndexRoute =
+  AuthenticatedCreditsIndexRouteImport.update({
+    id: '/credits/',
+    path: '/credits/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedChatsIndexRoute = AuthenticatedChatsIndexRouteImport.update({
   id: '/chats/',
   path: '/chats/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
-  id: '/apps/',
-  path: '/apps/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedCandidatesIndexRoute =
+  AuthenticatedCandidatesIndexRouteImport.update({
+    id: '/candidates/',
+    path: '/candidates/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ClerkAuthenticatedUserManagementRoute =
   ClerkAuthenticatedUserManagementRouteImport.update({
     id: '/user-management',
@@ -196,6 +220,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsTeamIndexRoute =
+  AuthenticatedSettingsTeamIndexRouteImport.update({
+    id: '/team/',
+    path: '/team/',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
@@ -219,12 +249,16 @@ export interface FileRoutesByFullPath {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
-  '/apps': typeof AuthenticatedAppsIndexRoute
+  '/candidates': typeof AuthenticatedCandidatesIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/credits': typeof AuthenticatedCreditsIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/messages': typeof AuthenticatedMessagesIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/shortlist': typeof AuthenticatedShortlistIndexRoute
+  '/unlocked': typeof AuthenticatedUnlockedIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/settings/team': typeof AuthenticatedSettingsTeamIndexRoute
 }
 export interface FileRoutesByTo {
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
@@ -247,12 +281,16 @@ export interface FileRoutesByTo {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
-  '/apps': typeof AuthenticatedAppsIndexRoute
+  '/candidates': typeof AuthenticatedCandidatesIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/credits': typeof AuthenticatedCreditsIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/messages': typeof AuthenticatedMessagesIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
-  '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/shortlist': typeof AuthenticatedShortlistIndexRoute
+  '/unlocked': typeof AuthenticatedUnlockedIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/settings/team': typeof AuthenticatedSettingsTeamIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -280,12 +318,16 @@ export interface FileRoutesById {
   '/clerk/(auth)/sign-in': typeof ClerkauthSignInRoute
   '/clerk/(auth)/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/_authenticated/user-management': typeof ClerkAuthenticatedUserManagementRoute
-  '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
+  '/_authenticated/candidates/': typeof AuthenticatedCandidatesIndexRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
+  '/_authenticated/credits/': typeof AuthenticatedCreditsIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
+  '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/_authenticated/shortlist/': typeof AuthenticatedShortlistIndexRoute
+  '/_authenticated/unlocked/': typeof AuthenticatedUnlockedIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/settings/team/': typeof AuthenticatedSettingsTeamIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -311,12 +353,16 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
-    | '/apps'
+    | '/candidates'
     | '/chats'
+    | '/credits'
     | '/help-center'
+    | '/messages'
     | '/settings/'
-    | '/tasks'
+    | '/shortlist'
+    | '/unlocked'
     | '/users'
+    | '/settings/team'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/clerk'
@@ -339,12 +385,16 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
-    | '/apps'
+    | '/candidates'
     | '/chats'
+    | '/credits'
     | '/help-center'
+    | '/messages'
     | '/settings'
-    | '/tasks'
+    | '/shortlist'
+    | '/unlocked'
     | '/users'
+    | '/settings/team'
   id:
     | '__root__'
     | '/_authenticated'
@@ -371,12 +421,16 @@ export interface FileRouteTypes {
     | '/clerk/(auth)/sign-in'
     | '/clerk/(auth)/sign-up'
     | '/clerk/_authenticated/user-management'
-    | '/_authenticated/apps/'
+    | '/_authenticated/candidates/'
     | '/_authenticated/chats/'
+    | '/_authenticated/credits/'
     | '/_authenticated/help-center/'
+    | '/_authenticated/messages/'
     | '/_authenticated/settings/'
-    | '/_authenticated/tasks/'
+    | '/_authenticated/shortlist/'
+    | '/_authenticated/unlocked/'
     | '/_authenticated/users/'
+    | '/_authenticated/settings/team/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -515,11 +569,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/tasks/': {
-      id: '/_authenticated/tasks/'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
+    '/_authenticated/unlocked/': {
+      id: '/_authenticated/unlocked/'
+      path: '/unlocked'
+      fullPath: '/unlocked'
+      preLoaderRoute: typeof AuthenticatedUnlockedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/shortlist/': {
+      id: '/_authenticated/shortlist/'
+      path: '/shortlist'
+      fullPath: '/shortlist'
+      preLoaderRoute: typeof AuthenticatedShortlistIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/': {
@@ -529,11 +590,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/messages/': {
+      id: '/_authenticated/messages/'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
       fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/credits/': {
+      id: '/_authenticated/credits/'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof AuthenticatedCreditsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chats/': {
@@ -543,11 +618,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/apps/': {
-      id: '/_authenticated/apps/'
-      path: '/apps'
-      fullPath: '/apps'
-      preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+    '/_authenticated/candidates/': {
+      id: '/_authenticated/candidates/'
+      path: '/candidates'
+      fullPath: '/candidates'
+      preLoaderRoute: typeof AuthenticatedCandidatesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/clerk/_authenticated/user-management': {
@@ -606,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/team/': {
+      id: '/_authenticated/settings/team/'
+      path: '/team'
+      fullPath: '/settings/team'
+      preLoaderRoute: typeof AuthenticatedSettingsTeamIndexRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
   }
 }
 
@@ -615,6 +697,7 @@ interface AuthenticatedSettingsRouteRouteChildren {
   AuthenticatedSettingsDisplayRoute: typeof AuthenticatedSettingsDisplayRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
+  AuthenticatedSettingsTeamIndexRoute: typeof AuthenticatedSettingsTeamIndexRoute
 }
 
 const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteChildren =
@@ -625,6 +708,7 @@ const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteCh
     AuthenticatedSettingsNotificationsRoute:
       AuthenticatedSettingsNotificationsRoute,
     AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
+    AuthenticatedSettingsTeamIndexRoute: AuthenticatedSettingsTeamIndexRoute,
   }
 
 const AuthenticatedSettingsRouteRouteWithChildren =
@@ -636,10 +720,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
-  AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
+  AuthenticatedCandidatesIndexRoute: typeof AuthenticatedCandidatesIndexRoute
   AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
+  AuthenticatedCreditsIndexRoute: typeof AuthenticatedCreditsIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
-  AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
+  AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
+  AuthenticatedShortlistIndexRoute: typeof AuthenticatedShortlistIndexRoute
+  AuthenticatedUnlockedIndexRoute: typeof AuthenticatedUnlockedIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
@@ -647,10 +734,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
-  AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
+  AuthenticatedCandidatesIndexRoute: AuthenticatedCandidatesIndexRoute,
   AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
+  AuthenticatedCreditsIndexRoute: AuthenticatedCreditsIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
-  AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
+  AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
+  AuthenticatedShortlistIndexRoute: AuthenticatedShortlistIndexRoute,
+  AuthenticatedUnlockedIndexRoute: AuthenticatedUnlockedIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 

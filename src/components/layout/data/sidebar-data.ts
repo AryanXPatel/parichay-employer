@@ -1,56 +1,35 @@
 import {
-  Construction,
   LayoutDashboard,
-  Monitor,
-  Bug,
-  ListTodo,
-  FileX,
-  HelpCircle,
-  Lock,
-  Bell,
-  Package,
-  Palette,
-  ServerOff,
-  Settings,
-  Wrench,
-  UserCog,
-  UserX,
-  Users,
+  Search,
+  Heart,
+  Unlock,
   MessagesSquare,
-  ShieldCheck,
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
+  Coins,
+  Building2,
+  Users,
+  Bell,
+  HelpCircle,
+  Settings,
+  UserCog,
 } from 'lucide-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'Recruiter',
+    email: 'recruiter@company.com',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: 'Shadcn Admin',
-      logo: Command,
-      plan: 'Vite + ShadcnUI',
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
+      name: 'TechCorp India',
+      logo: Building2,
+      plan: 'Professional',
     },
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Recruitment',
       items: [
         {
           title: 'Dashboard',
@@ -58,139 +37,54 @@ export const sidebarData: SidebarData = {
           icon: LayoutDashboard,
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: ListTodo,
+          title: 'Find Candidates',
+          url: '/candidates',
+          icon: Search,
         },
         {
-          title: 'Apps',
-          url: '/apps',
-          icon: Package,
+          title: 'Shortlist',
+          url: '/shortlist',
+          icon: Heart,
         },
         {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
+          title: 'Unlocked Profiles',
+          url: '/unlocked',
+          icon: Unlock,
+        },
+        {
+          title: 'Messages',
+          url: '/messages',
+          badge: 'Soon',
           icon: MessagesSquare,
         },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: Users,
-        },
-        {
-          title: 'Secured by Clerk',
-          icon: ClerkLogo,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/clerk/sign-in',
-            },
-            {
-              title: 'Sign Up',
-              url: '/clerk/sign-up',
-            },
-            {
-              title: 'User Management',
-              url: '/clerk/user-management',
-            },
-          ],
-        },
       ],
     },
     {
-      title: 'Pages',
+      title: 'Account',
       items: [
         {
-          title: 'Auth',
-          icon: ShieldCheck,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/sign-in',
-            },
-            {
-              title: 'Sign In (2 Col)',
-              url: '/sign-in-2',
-            },
-            {
-              title: 'Sign Up',
-              url: '/sign-up',
-            },
-            {
-              title: 'Forgot Password',
-              url: '/forgot-password',
-            },
-            {
-              title: 'OTP',
-              url: '/otp',
-            },
-          ],
+          title: 'Credits & Plans',
+          url: '/credits',
+          icon: Coins,
         },
-        {
-          title: 'Errors',
-          icon: Bug,
-          items: [
-            {
-              title: 'Unauthorized',
-              url: '/errors/unauthorized',
-              icon: Lock,
-            },
-            {
-              title: 'Forbidden',
-              url: '/errors/forbidden',
-              icon: UserX,
-            },
-            {
-              title: 'Not Found',
-              url: '/errors/not-found',
-              icon: FileX,
-            },
-            {
-              title: 'Internal Server Error',
-              url: '/errors/internal-server-error',
-              icon: ServerOff,
-            },
-            {
-              title: 'Maintenance Error',
-              url: '/errors/maintenance-error',
-              icon: Construction,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'Other',
-      items: [
         {
           title: 'Settings',
           icon: Settings,
           items: [
             {
-              title: 'Profile',
+              title: 'Company Profile',
               url: '/settings',
               icon: UserCog,
             },
             {
-              title: 'Account',
-              url: '/settings/account',
-              icon: Wrench,
-            },
-            {
-              title: 'Appearance',
-              url: '/settings/appearance',
-              icon: Palette,
+              title: 'Team Members',
+              url: '/settings/team',
+              icon: Users,
             },
             {
               title: 'Notifications',
               url: '/settings/notifications',
               icon: Bell,
-            },
-            {
-              title: 'Display',
-              url: '/settings/display',
-              icon: Monitor,
             },
           ],
         },
