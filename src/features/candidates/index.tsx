@@ -1,29 +1,51 @@
 import * as React from 'react'
-import { LayoutGrid, List } from 'lucide-react'
+import { Download, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
+import {
+  type AdvancedFilters,
+  AdvancedFiltersPopover,
+  defaultAdvancedFilters,
+} from './components/advanced-filters-popover'
+import { CandidatePreviewSheet } from './components/candidate-preview-sheet'
 import { CandidatesProvider, useCandidates } from './components/candidates-provider'
-import { CandidatesFilters } from './components/candidates-filters'
-import { CandidatesGrid } from './components/candidates-grid'
-import { CandidatePreviewDialog } from './components/candidate-preview-dialog'
+import { CandidatesTable } from './components/candidates-table'
 import { CandidateUnlockDialog } from './components/candidate-unlock-dialog'
+import {
+  type QuickFilterState,
+  QuickFilters,
+  defaultQuickFilters,
+} from './components/quick-filters'
+import {
+  experienceRanges,
+  profileScoreRanges,
+  salaryRanges,
+} from './data/data'
 import { mockCandidates } from './data/mock-candidates'
 import { type Candidate } from './data/schema'
-import { experienceRanges } from './data/data'
 
 function CandidatesContent() {
-  const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid')
   const [searchQuery, setSearchQuery] = React.useState('')
-  const [selectedVerification, setSelectedVerification] = React.useState<string[]>([])
-  const [selectedExperience, setSelectedExperience] = React.useState<string[]>([])
-  const [selectedLocations, setSelectedLocations] = React.useState<string[]>([])
-  const [selectedSkills, setSelectedSkills] = React.useState<string[]>([])
+  const [quickFilters, setQuickFilters] =
+    React.useState<QuickFilterState>(defaultQuickFilters)
+  const [advancedFilters, setAdvancedFilters] = React.useState<AdvancedFilters>(
+    defaultAdvancedFilters
+  )
 
-  const { isPreviewOpen, setPreviewOpen, isUnlockOpen, setUnlockOpen } = useCandidates()
+  const {
+    selectedCandidate,
+    isSheetOpen,
+    setSheetOpen,
+    isUnlockOpen,
+    setUnlockOpen,
+  } = useCandidates()
 
   const filteredCandidates = React.useMemo(() => {
     return mockCandidates.filter((candidate: Candidate) => {
+      // Apply text search
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         const matchesName =
@@ -38,119 +60,195 @@ function CandidatesContent() {
         }
       }
 
-      if (selectedVerification.length > 0) {
-        if (!selectedVerification.includes(candidate.verificationStatus)) {
+      // Apply quick filters - Skills
+      if (quickFilters.skills.length > 0) {
+        const hasMatchingSkill = quickFilters.skills.some((skill) =>
+          candidate.skills.some(
+            (s) => s.toLowerCase() === skill.toLowerCase()
+          )
+        )
+        if (!hasMatchingSkill) return false
+      }
+
+      // Apply quick filters - Locations
+      if (quickFilters.locations.length > 0) {
+        if (
+          !quickFilters.locations.some(
+            (loc) =>
+              loc.toLowerCase() === candidate.currentLocation.toLowerCase()
+          )
+        ) {
           return false
         }
       }
 
-      if (selectedExperience.length > 0) {
-        const range = experienceRanges.find((r) => r.value === selectedExperience[0])
+      // Apply quick filters - Experience
+      if (quickFilters.experience.length > 0) {
+        const matchesExperience = quickFilters.experience.some((expValue) => {
+          const range = experienceRanges.find((r) => r.value === expValue)
+          if (range) {
+            return (
+              candidate.experienceYears >= range.min &&
+              candidate.experienceYears <= range.max
+            )
+          }
+          return false
+        })
+        if (!matchesExperience) return false
+      }
+
+      // Apply quick filters - Verification
+      if (quickFilters.verification.length > 0) {
+        if (!quickFilters.verification.includes(candidate.verificationStatus)) {
+          return false
+        }
+      }
+
+      // Apply advanced filters
+      if (advancedFilters.experienceMin || advancedFilters.experienceMax) {
+        const minRange = experienceRanges.find(
+          (r) => r.value === advancedFilters.experienceMin
+        )
+        const maxRange = experienceRanges.find(
+          (r) => r.value === advancedFilters.experienceMax
+        )
+        if (minRange && candidate.experienceYears < minRange.min) return false
+        if (maxRange && candidate.experienceYears > maxRange.max) return false
+      }
+
+      if (advancedFilters.salaryRange) {
+        const range = salaryRanges.find(
+          (r) => r.value === advancedFilters.salaryRange
+        )
         if (range) {
           if (
-            candidate.experienceYears < range.min ||
-            candidate.experienceYears > range.max
+            candidate.expectedSalary < range.min ||
+            candidate.expectedSalary > range.max
           ) {
             return false
           }
         }
       }
 
-      if (selectedLocations.length > 0) {
-        if (!selectedLocations.includes(candidate.currentLocation)) {
+      if (advancedFilters.verificationStatuses.length > 0) {
+        if (
+          !advancedFilters.verificationStatuses.includes(
+            candidate.verificationStatus
+          )
+        ) {
           return false
         }
       }
 
-      if (selectedSkills.length > 0) {
-        const hasMatchingSkill = selectedSkills.some((skill) =>
-          candidate.skills.includes(skill)
+      if (advancedFilters.profileScoreRange) {
+        const range = profileScoreRanges.find(
+          (r) => r.value === advancedFilters.profileScoreRange
         )
-        if (!hasMatchingSkill) {
+        if (range) {
+          if (
+            candidate.profileScore < range.min ||
+            candidate.profileScore > range.max
+          ) {
+            return false
+          }
+        }
+      }
+
+      if (advancedFilters.noticePeriod) {
+        const normalizedNoticePeriod = candidate.noticePeriod
+          .toLowerCase()
+          .replace(/\s/g, '-')
+        if (normalizedNoticePeriod !== advancedFilters.noticePeriod) {
           return false
+        }
+      }
+
+      if (advancedFilters.creditRange && advancedFilters.creditRange !== 'all') {
+        const creditRange = advancedFilters.creditRange
+        if (creditRange === '0-20') {
+          if (candidate.creditCost > 20) return false
+        } else if (creditRange === '20-40') {
+          if (candidate.creditCost < 20 || candidate.creditCost > 40) {
+            return false
+          }
+        } else if (creditRange === '40+') {
+          if (candidate.creditCost < 40) return false
         }
       }
 
       return true
     })
-  }, [
-    searchQuery,
-    selectedVerification,
-    selectedExperience,
-    selectedLocations,
-    selectedSkills,
-  ])
+  }, [searchQuery, quickFilters, advancedFilters])
 
-  const clearFilters = () => {
-    setSearchQuery('')
-    setSelectedVerification([])
-    setSelectedExperience([])
-    setSelectedLocations([])
-    setSelectedSkills([])
+  const handleResetAdvancedFilters = () => {
+    setAdvancedFilters(defaultAdvancedFilters)
   }
 
   return (
-    <>
+    <TooltipProvider>
       <EmployerHeader />
 
       <Main>
         <div className='mb-6 space-y-4'>
+          {/* Header */}
+          <div>
+            <h1 className='text-2xl font-bold tracking-tight'>
+              Find Candidates
+            </h1>
+            <p className='text-muted-foreground'>
+              Search and unlock verified candidate profiles
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className='relative'>
+            <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
+            <Input
+              type='text'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder='Search by name, title, or skills...'
+              className='pl-10'
+            />
+          </div>
+
+          {/* Quick Filters */}
+          <QuickFilters filters={quickFilters} onChange={setQuickFilters} />
+
+          {/* Toolbar */}
           <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-2xl font-bold tracking-tight'>Find Candidates</h1>
-              <p className='text-muted-foreground'>
-                Search and unlock verified candidate profiles
-              </p>
-            </div>
+            <p className='text-sm text-muted-foreground'>
+              Showing {filteredCandidates.length} of {mockCandidates.length}{' '}
+              candidates
+            </p>
             <div className='flex items-center gap-2'>
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size='icon'
-                onClick={() => setViewMode('grid')}
-              >
-                <LayoutGrid className='size-4' />
-              </Button>
-              <Button
-                variant={viewMode === 'table' ? 'default' : 'outline'}
-                size='icon'
-                onClick={() => setViewMode('table')}
-              >
-                <List className='size-4' />
+              <AdvancedFiltersPopover
+                filters={advancedFilters}
+                onChange={setAdvancedFilters}
+                onReset={handleResetAdvancedFilters}
+              />
+              <Button variant='outline' size='sm' className='gap-2'>
+                <Download className='size-4' />
+                Export
               </Button>
             </div>
           </div>
-
-          <CandidatesFilters
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            selectedVerification={selectedVerification}
-            onVerificationChange={setSelectedVerification}
-            selectedExperience={selectedExperience}
-            onExperienceChange={setSelectedExperience}
-            selectedLocations={selectedLocations}
-            onLocationsChange={setSelectedLocations}
-            selectedSkills={selectedSkills}
-            onSkillsChange={setSelectedSkills}
-            onClearFilters={clearFilters}
-          />
-
-          <p className='text-sm text-muted-foreground'>
-            Showing {filteredCandidates.length} of {mockCandidates.length} candidates
-          </p>
         </div>
 
-        <CandidatesGrid candidates={filteredCandidates} />
+        {/* Candidates Table */}
+        <CandidatesTable candidates={filteredCandidates} />
       </Main>
 
-      <CandidatePreviewDialog
-        open={isPreviewOpen}
-        onOpenChange={setPreviewOpen}
+      {/* Preview Sheet */}
+      <CandidatePreviewSheet
+        candidate={selectedCandidate}
+        open={isSheetOpen}
+        onOpenChange={setSheetOpen}
       />
-      <CandidateUnlockDialog
-        open={isUnlockOpen}
-        onOpenChange={setUnlockOpen}
-      />
-    </>
+
+      {/* Unlock Dialog */}
+      <CandidateUnlockDialog open={isUnlockOpen} onOpenChange={setUnlockOpen} />
+    </TooltipProvider>
   )
 }
 

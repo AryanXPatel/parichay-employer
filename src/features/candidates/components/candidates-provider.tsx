@@ -8,6 +8,8 @@ interface CandidatesContextType {
   setPreviewOpen: (open: boolean) => void
   isUnlockOpen: boolean
   setUnlockOpen: (open: boolean) => void
+  isSheetOpen: boolean
+  setSheetOpen: (open: boolean) => void
 }
 
 const CandidatesContext = React.createContext<CandidatesContextType | undefined>(
@@ -18,6 +20,7 @@ export function CandidatesProvider({ children }: { children: React.ReactNode }) 
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null)
   const [isPreviewOpen, setPreviewOpen] = React.useState(false)
   const [isUnlockOpen, setUnlockOpen] = React.useState(false)
+  const [isSheetOpen, setSheetOpen] = React.useState(false)
 
   return (
     <CandidatesContext.Provider
@@ -28,6 +31,8 @@ export function CandidatesProvider({ children }: { children: React.ReactNode }) 
         setPreviewOpen,
         isUnlockOpen,
         setUnlockOpen,
+        isSheetOpen,
+        setSheetOpen,
       }}
     >
       {children}
