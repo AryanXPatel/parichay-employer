@@ -1,36 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import { format } from 'date-fns'
+import { getRouteApi } from '@tanstack/react-router'
 import {
   ArrowLeft,
-  MoreVertical,
   Edit,
+  ImagePlus,
+  MessagesSquare,
+  MoreVertical,
   Paperclip,
   Phone,
-  ImagePlus,
   Plus,
   Search as SearchIcon,
   Send,
   Video,
-  MessagesSquare,
 } from 'lucide-react'
+import { useCandidatesStore } from '@/stores/candidates-store'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { ConfigDrawer } from '@/components/config-drawer'
-import { Header } from '@/components/layout/header'
+import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
+import { mockCandidates } from '@/features/candidates/data/mock-candidates'
 import { NewChat } from './components/new-chat'
 import { type ChatUser, type Convo } from './data/chat-types'
-// Fake Data
-import { conversations } from './data/convo.json'
+import { conversations as staticConversations } from './data/convo.json'
+
+const routeApi = getRouteApi('/_authenticated/chats/')
 
 export function Chats() {
+  const { candidateId } = routeApi.useSearch()
+  const { unlocked } = useCandidatesStore()
+
   const [search, setSearch] = useState('')
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null)
   const [mobileSelectedUser, setMobileSelectedUser] = useState<ChatUser | null>(
@@ -39,8 +42,47 @@ export function Chats() {
   const [createConversationDialogOpened, setCreateConversationDialog] =
     useState(false)
 
+  // Generate conversations from unlocked candidates
+  const candidateConversations = useMemo(() => {
+    return mockCandidates
+      .filter((c) => unlocked.includes(c.id))
+      .map((candidate) => ({
+        id: `candidate-${candidate.id}`,
+        candidateId: candidate.id,
+        profile: candidate.avatar || '',
+        username: `${candidate.firstName.toLowerCase()}_${candidate.lastName.toLowerCase()}`,
+        fullName: `${candidate.firstName} ${candidate.lastName}`,
+        title: candidate.title,
+        messages: [
+          {
+            sender: 'You',
+            message: `Hello ${candidate.firstName}, I reviewed your profile and would like to connect regarding a job opportunity.`,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      }))
+  }, [unlocked])
+
+  // Combine static conversations with candidate conversations
+  const allConversations = useMemo(() => {
+    return [...candidateConversations, ...staticConversations]
+  }, [candidateConversations])
+
+  // Auto-select conversation when candidateId is provided
+  useEffect(() => {
+    if (candidateId) {
+      const targetConvo = candidateConversations.find(
+        (c) => c.candidateId === candidateId
+      )
+      if (targetConvo) {
+        setSelectedUser(targetConvo as ChatUser)
+        setMobileSelectedUser(targetConvo as ChatUser)
+      }
+    }
+  }, [candidateId, candidateConversations])
+
   // Filtered data based on the search query
-  const filteredChatList = conversations.filter(({ fullName }) =>
+  const filteredChatList = allConversations.filter(({ fullName }) =>
     fullName.toLowerCase().includes(search.trim().toLowerCase())
   )
 
@@ -61,19 +103,11 @@ export function Chats() {
     {}
   )
 
-  const users = conversations.map(({ messages, ...user }) => user)
+  const users = allConversations.map(({ messages: _m, ...user }) => user)
 
   return (
     <>
-      {/* ===== Top Heading ===== */}
-      <Header>
-        <Search />
-        <div className='ms-auto flex items-center space-x-4'>
-          <ThemeSwitch />
-          <ConfigDrawer />
-          <ProfileDropdown />
-        </div>
-      </Header>
+      <EmployerHeader />
 
       <Main fixed>
         <section className='flex h-full gap-6'>
@@ -82,7 +116,7 @@ export function Chats() {
             <div className='sticky top-0 z-10 -mx-4 bg-background px-4 pb-3 shadow-md sm:static sm:z-auto sm:mx-0 sm:p-0 sm:shadow-none'>
               <div className='flex items-center justify-between py-2'>
                 <div className='flex gap-2'>
-                  <h1 className='text-2xl font-bold'>Inbox</h1>
+                  <h1 className='text-2xl font-bold'>Messages</h1>
                   <MessagesSquare size={20} />
                 </div>
 
@@ -115,46 +149,58 @@ export function Chats() {
             </div>
 
             <ScrollArea className='-mx-3 h-full overflow-scroll p-3'>
-              {filteredChatList.map((chatUsr) => {
-                const { id, profile, username, messages, fullName } = chatUsr
-                const lastConvo = messages[0]
-                const lastMsg =
-                  lastConvo.sender === 'You'
-                    ? `You: ${lastConvo.message}`
-                    : lastConvo.message
-                return (
-                  <Fragment key={id}>
-                    <button
-                      type='button'
-                      className={cn(
-                        'group hover:bg-accent hover:text-accent-foreground',
-                        `flex w-full rounded-md px-2 py-2 text-start text-sm`,
-                        selectedUser?.id === id && 'sm:bg-muted'
-                      )}
-                      onClick={() => {
-                        setSelectedUser(chatUsr)
-                        setMobileSelectedUser(chatUsr)
-                      }}
-                    >
-                      <div className='flex gap-2'>
-                        <Avatar>
-                          <AvatarImage src={profile} alt={username} />
-                          <AvatarFallback>{username}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <span className='col-start-2 row-span-2 font-medium'>
-                            {fullName}
-                          </span>
-                          <span className='col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis text-muted-foreground group-hover:text-accent-foreground/90'>
-                            {lastMsg}
-                          </span>
+              {filteredChatList.length === 0 ? (
+                <div className='py-8 text-center text-sm text-muted-foreground'>
+                  No conversations yet. Unlock candidate profiles to start
+                  messaging.
+                </div>
+              ) : (
+                filteredChatList.map((chatUsr) => {
+                  const { id, profile, username, messages, fullName } = chatUsr
+                  const lastConvo = messages[0]
+                  const lastMsg =
+                    lastConvo.sender === 'You'
+                      ? `You: ${lastConvo.message}`
+                      : lastConvo.message
+                  return (
+                    <Fragment key={id}>
+                      <button
+                        type='button'
+                        className={cn(
+                          'group hover:bg-accent hover:text-accent-foreground',
+                          `flex w-full rounded-md px-2 py-2 text-start text-sm`,
+                          selectedUser?.id === id && 'sm:bg-muted'
+                        )}
+                        onClick={() => {
+                          setSelectedUser(chatUsr as ChatUser)
+                          setMobileSelectedUser(chatUsr as ChatUser)
+                        }}
+                      >
+                        <div className='flex gap-2'>
+                          <Avatar>
+                            <AvatarImage src={profile} alt={username} />
+                            <AvatarFallback>
+                              {fullName
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className='col-start-2 row-span-2 font-medium'>
+                              {fullName}
+                            </span>
+                            <span className='col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis text-muted-foreground group-hover:text-accent-foreground/90'>
+                              {lastMsg}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                    <Separator className='my-1' />
-                  </Fragment>
-                )
-              })}
+                      </button>
+                      <Separator className='my-1' />
+                    </Fragment>
+                  )
+                })
+              )}
             </ScrollArea>
           </div>
 
@@ -184,7 +230,12 @@ export function Chats() {
                         src={selectedUser.profile}
                         alt={selectedUser.username}
                       />
-                      <AvatarFallback>{selectedUser.username}</AvatarFallback>
+                      <AvatarFallback>
+                        {selectedUser.fullName
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <span className='col-start-2 row-span-2 text-sm font-medium lg:text-base'>
@@ -328,11 +379,12 @@ export function Chats() {
                 <div className='space-y-2 text-center'>
                   <h1 className='text-xl font-semibold'>Your messages</h1>
                   <p className='text-sm text-muted-foreground'>
-                    Send a message to start a chat.
+                    Select a conversation or unlock a candidate profile to start
+                    messaging.
                   </p>
                 </div>
                 <Button onClick={() => setCreateConversationDialog(true)}>
-                  Send message
+                  Start conversation
                 </Button>
               </div>
             </div>

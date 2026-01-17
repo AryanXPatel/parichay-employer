@@ -4,11 +4,14 @@ import { persist } from 'zustand/middleware'
 interface CandidatesState {
   shortlisted: string[]
   unlocked: string[]
+  contacted: string[]
   addToShortlist: (id: string) => void
   removeFromShortlist: (id: string) => void
   markAsUnlocked: (id: string) => void
+  markAsContacted: (id: string) => void
   isShortlisted: (id: string) => boolean
   isUnlocked: (id: string) => boolean
+  isContacted: (id: string) => boolean
 }
 
 export const useCandidatesStore = create<CandidatesState>()(
@@ -16,6 +19,7 @@ export const useCandidatesStore = create<CandidatesState>()(
     (set, get) => ({
       shortlisted: [],
       unlocked: [],
+      contacted: [],
       addToShortlist: (id: string) => {
         set((state) => ({
           shortlisted: state.shortlisted.includes(id)
@@ -35,11 +39,21 @@ export const useCandidatesStore = create<CandidatesState>()(
             : [...state.unlocked, id],
         }))
       },
+      markAsContacted: (id: string) => {
+        set((state) => ({
+          contacted: state.contacted.includes(id)
+            ? state.contacted
+            : [...state.contacted, id],
+        }))
+      },
       isShortlisted: (id: string) => {
         return get().shortlisted.includes(id)
       },
       isUnlocked: (id: string) => {
         return get().unlocked.includes(id)
+      },
+      isContacted: (id: string) => {
+        return get().contacted.includes(id)
       },
     }),
     {

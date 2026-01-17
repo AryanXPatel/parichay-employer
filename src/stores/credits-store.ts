@@ -7,6 +7,7 @@ interface UsageStats {
   searches: number
   views: number
   unlocks: number
+  contacted: number
 }
 
 interface CreditState {
@@ -30,6 +31,7 @@ const initialState = {
     searches: 45,
     views: 23,
     unlocks: 8,
+    contacted: 5,
   },
 }
 

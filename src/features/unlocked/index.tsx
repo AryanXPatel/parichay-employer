@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns'
 import { Link } from '@tanstack/react-router'
-import { Copy, Mail, Phone, Search, Unlock } from 'lucide-react'
+import { MessageSquare, Search, Unlock } from 'lucide-react'
 import { useCandidatesStore } from '@/stores/candidates-store'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -20,11 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { ContactActions } from '@/components/contact-actions'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
 import { mockCandidates } from '@/features/candidates/data/mock-candidates'
@@ -35,10 +31,6 @@ export function UnlockedProfiles() {
   const unlockedCandidates = mockCandidates.filter((c) =>
     unlocked.includes(c.id)
   )
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-  }
 
   return (
     <>
@@ -88,7 +80,8 @@ export function UnlockedProfiles() {
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Unlocked</TableHead>
-                    <TableHead className='text-right'>Quick Actions</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead className='text-right'>Message</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -122,53 +115,22 @@ export function UnlockedProfiles() {
                           addSuffix: true,
                         })}
                       </TableCell>
+                      <TableCell>
+                        <ContactActions
+                          candidate={candidate}
+                          variant='compact'
+                        />
+                      </TableCell>
                       <TableCell className='text-right'>
-                        <div className='flex items-center justify-end gap-1'>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() =>
-                                  copyToClipboard(candidate.email || '')
-                                }
-                              >
-                                <Mail className='size-4' />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Copy Email</TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() =>
-                                  copyToClipboard(candidate.phone || '')
-                                }
-                              >
-                                <Phone className='size-4' />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Copy Phone</TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant='ghost'
-                                size='icon'
-                                onClick={() =>
-                                  copyToClipboard(
-                                    `${candidate.firstName} ${candidate.lastName}\n${candidate.email}\n${candidate.phone}`
-                                  )
-                                }
-                              >
-                                <Copy className='size-4' />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Copy All</TooltipContent>
-                          </Tooltip>
-                        </div>
+                        <Button variant='outline' size='sm' asChild>
+                          <Link
+                            to='/chats'
+                            search={{ candidateId: candidate.id }}
+                          >
+                            <MessageSquare className='me-2 size-4' />
+                            Message
+                          </Link>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

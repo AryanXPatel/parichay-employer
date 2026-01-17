@@ -53,8 +53,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Messages',
-          url: '/messages',
-          badge: 'Soon',
+          url: '/chats',
           icon: MessagesSquare,
         },
       ],

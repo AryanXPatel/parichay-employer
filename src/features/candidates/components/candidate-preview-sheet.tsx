@@ -26,6 +26,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { ContactActions } from '@/components/contact-actions'
 import { verificationStatuses } from '../data/data'
 import {
   type Candidate,
@@ -249,10 +250,9 @@ export function CandidatePreviewSheet({
               Unlock ({candidate.creditCost} credits)
             </Button>
           ) : (
-            <Button className='flex-1 gap-2'>
-              <Mail className='size-4' />
-              Contact
-            </Button>
+            <div className='flex-1'>
+              <ContactActions candidate={candidate} />
+            </div>
           )}
         </SheetFooter>
       </SheetContent>

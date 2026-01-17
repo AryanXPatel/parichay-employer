@@ -1,8 +1,12 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+import { z } from 'zod'
+import { Chats } from '@/features/chats'
+
+const searchSchema = z.object({
+  candidateId: z.string().optional(),
+})
 
 export const Route = createFileRoute('/_authenticated/chats/')({
-  beforeLoad: () => {
-    throw redirect({ to: '/messages' })
-  },
-  component: () => null,
+  validateSearch: searchSchema,
+  component: Chats,
 })

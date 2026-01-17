@@ -10,6 +10,7 @@ import {
   TrendingUp,
   AlertTriangle,
   ArrowRight,
+  MessageCircle,
 } from 'lucide-react'
 import { useCreditsStore } from '@/stores/credits-store'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/card'
 import { EmployerHeader } from '@/components/employer-header'
 import { Main } from '@/components/layout/main'
+import { ConversionFunnel } from './components/conversion-funnel'
 import { RecentActivity } from './components/recent-activity'
 import { UsageChart } from './components/usage-chart'
 
@@ -85,7 +87,7 @@ export function Dashboard() {
           )}
         </div>
 
-        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-5'>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
@@ -154,10 +156,32 @@ export function Dashboard() {
               </p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Contacted This Month
+              </CardTitle>
+              <MessageCircle className='size-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>
+                {usageThisMonth.contacted}
+              </div>
+              <p className='text-xs text-muted-foreground'>
+                {usageThisMonth.unlocks > 0
+                  ? Math.round(
+                      (usageThisMonth.contacted / usageThisMonth.unlocks) * 100
+                    )
+                  : 0}
+                % contact rate
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className='mt-6 grid grid-cols-1 gap-4 lg:grid-cols-7'>
-          <Card className='col-span-1 lg:col-span-4'>
+        <div className='mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12'>
+          <Card className='col-span-1 lg:col-span-5'>
             <CardHeader>
               <CardTitle>Usage Overview</CardTitle>
               <CardDescription>
@@ -166,6 +190,18 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <UsageChart />
+            </CardContent>
+          </Card>
+
+          <Card className='col-span-1 lg:col-span-4'>
+            <CardHeader>
+              <CardTitle>Conversion Funnel</CardTitle>
+              <CardDescription>
+                Track your recruitment pipeline efficiency
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ConversionFunnel />
             </CardContent>
           </Card>
 
